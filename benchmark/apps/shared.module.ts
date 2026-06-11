@@ -1,4 +1,4 @@
-import { Module, Controller, Get, Post, Body, Param, Injectable } from "@nestjs/common";
+import { Module, Controller, Get, Post, Body, Param, Inject, Injectable } from "@nestjs/common";
 
 /**
  * Simple service for benchmark testing
@@ -54,7 +54,9 @@ export class BenchmarkService {
  */
 @Controller()
 export class BenchmarkController {
-  constructor(private readonly service: BenchmarkService) {}
+  // Explicit @Inject so DI works under runners that don't emit decorator
+  // metadata (tsx/esbuild has no `emitDecoratorMetadata` support).
+  constructor(@Inject(BenchmarkService) private readonly service: BenchmarkService) {}
 
   // Simple text response
   @Get()
